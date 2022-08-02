@@ -4,14 +4,18 @@
 
 # Create hourly nowcast visualizations
 
+# %% Import dependencies
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__),'../../'))
+os.chdir("/users/sadamov/PyProjects/photocast/")
 from datetime import timedelta
 import numpy as np
-import os
 from pyreadr import read_r
 import tensorflow as tf
 
-from data.image import write_png
-from setup.tf_setup import tf_setup
+from src.data.image import write_png
+from src.setup.tf_setup import tf_setup
 
 from model import generator
 from model.generator import noise_dim
@@ -21,7 +25,7 @@ tf_setup(11000)
 tf.random.set_seed(1)
 
 run_path = experiment_path + '/run__/' + '20210716_080451'
-checkpoint_nr = 167
+checkpoint_nr = 1
 
 # lead_times = [0, 10, 20, 30, 40, 50, 60]
 lead_times = [0, 60, 120, 180, 240, 300, 360]
@@ -32,8 +36,8 @@ lead_times_descr = "hourly"
 index = read_r('data/nowcasting/cevio/index.RData')['index']
 index_test = index[index.reference.dt.year >= 2020]
 
-images = tf.convert_to_tensor(np.load('data/nowcasting/cevio/images_64_128.npy'))
-weather = tf.convert_to_tensor(np.load('data/nowcasting/cevio/weather.npy'))
+images = tf.convert_to_tensor(np.load('data/nowcasting/cevio/images_64_128.npy', mmap_mode='r'))
+weather = tf.convert_to_tensor(np.load('data/nowcasting/cevio/weather.npy', mmap_mode='r'))
 
 # %%  Load model
 
@@ -45,10 +49,10 @@ generator = generator.generator(height, width, weather_features)
 checkpoint = tf.train.Checkpoint(generator=generator)
 manager = tf.train.CheckpointManager(checkpoint, directory=run_path + '/checkpoint', max_to_keep=1)
 # checkpoint.restore(manager.latest_checkpoint)
-checkpoint.restore(run_path + '/checkpoint/ckpt-' + str(checkpoint_nr))
+# checkpoint.restore(run_path + '/checkpoint/ckpt-' + str(checkpoint_nr))
 
 
-#%%
+# %%
 
 hours = [6, 10, 14]
 stddev = [0, 0.1, 0.2, 0.5, 1.0]

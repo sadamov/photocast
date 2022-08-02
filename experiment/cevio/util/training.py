@@ -5,14 +5,19 @@
 import tensorflow as tf
 import time
 
-from data import image
+from src.data import image
 from ops.cut_mix import cutmix_maps
 
 from model.generator import noise_dim
 
 bxe_loss = tf.keras.losses.BinaryCrossentropy(from_logits=True)
 
-
+#! https://www.tensorflow.org/tutorials/customization/custom_training_walkthrough
+#! Autodifferentiation vs. calculate training steps yourself
+#! L1-Loss (Median) absolute value difference statt RMSE (Mean) als Loss - pixelwise
+#! Calculate difference between image_b and generated ones for regression
+#! Reduce output channels from 3 RGB to one pollen (+ height and width)
+#! Weather input was simply zero mean and unit variance
 @tf.function
 def gan_step(generator, optimizer_gen, discriminator, optimizer_disc,
              images_a, weathers_a, images_b, weathers_b, maps,
@@ -77,7 +82,8 @@ def train_gan(generator, optimizer_gen, discriminator, optimizer_disc, dataset_t
             if step % 10 == 0:
                 print(epoch.numpy(), '-', step.numpy())
 
-            maps = cutmix_maps(images_a.shape)
+            maps = cutmix_maps(images_a.shape) #!TODO remove this
+            #! Adjust this next function
             gan_step(generator, optimizer_gen, discriminator, optimizer_disc,
                      images_a, weathers_a, images_b, weathers_b, maps,
                      summary_writer, step)

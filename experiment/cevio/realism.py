@@ -3,16 +3,18 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 # Create pairs of real and generated images
-
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__),'../../'))
+os.chdir("/users/sadamov/PyProjects/photocast/")
 from datetime import timedelta
 import numpy as np
-import os
 from pyreadr import read_r
 import random
 import tensorflow as tf
 
-from data.image import write_png
-from setup.tf_setup import tf_setup
+from src.data.image import write_png
+from src.setup.tf_setup import tf_setup
 
 from model import generator
 from model.generator import noise_dim

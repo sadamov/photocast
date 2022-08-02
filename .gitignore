@@ -18,3 +18,5 @@ photocast-repro.iml
 ~$*
 tmp/*
 *#
+*.ipynb
+experiment/cevio/run__/*

@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 import tensorflow as tf
 
-from setup.tf_setup import tf_setup
+from src.setup.tf_setup import tf_setup
 
 
 def cutmix_maps(shape):

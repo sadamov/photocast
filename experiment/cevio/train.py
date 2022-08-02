@@ -3,14 +3,18 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 # Train the generator and discriminator networks
-
+# %% Import dependencies
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__),'../../'))
+os.chdir("/users/sadamov/PyProjects/photocast/")
 from contextlib import redirect_stdout
 import datetime
 import numpy as np
 from pathlib import Path
 import tensorflow as tf
 
-from setup.tf_setup import tf_setup
+from src.setup.tf_setup import tf_setup
 
 from model import generator, discriminator
 from util.path import experiment_path
@@ -34,9 +38,9 @@ Path(run_path).mkdir(parents=True, exist_ok=True)
 
 batch_size = 40
 
-images = tf.convert_to_tensor(np.load('data/nowcasting/cevio/images_64_128.npy'))
-weather = tf.convert_to_tensor(np.load('data/nowcasting/cevio/weather.npy'))
-pairs = np.load('data/nowcasting/cevio/pairs.npy').astype(int)
+images = tf.convert_to_tensor(np.load('data/nowcasting/cevio/images_64_128.npy', mmap_mode='r'))
+weather = tf.convert_to_tensor(np.load('data/nowcasting/cevio/weather.npy', mmap_mode='r'))
+pairs = np.load('data/nowcasting/cevio/pairs.npy', mmap_mode='r').astype(int)
 
 # images tensor with about 30000 samples leads to a libprotobuf error when creating the dataset iterator
 images0 = images[0:20000, :, :, :]
